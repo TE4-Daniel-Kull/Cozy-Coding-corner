@@ -1,0 +1,3 @@
+/Users/daniel.kull/Desktop/Cozy_Coding_corner/CLionProjects/TestingTheDocsCplusplus/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/daniel.kull/Desktop/Cozy_Coding_corner/CLionProjects/TestingTheDocsCplusplus/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/daniel.kull/Desktop/Cozy_Coding_corner/CLionProjects/TestingTheDocsCplusplus/cmake-build-debug/CMakeFiles/untitled.dir
