@@ -82,6 +82,23 @@ void whatAmI(string a) {
     cout << "I'm a string\n";
 }
 
+// FUNCTION TEMPLATE: (Instantiates at compile time a different function for each call)
+// Let's you use a generic class type inside your function.
+// ("class" can be replaced with "typename", in this context they are synonyms)
+template <class SomeType>
+SomeType sum(SomeType a, SomeType b) {
+        return a + b;
+}
+template <class T, typename U>
+bool areEqual(T a, U b) {
+    return (a == b);
+}
+// Fixed types
+template <class T, int N>
+T fixedMultiply(T val) {
+    return val * N;
+}
+
 int main() {
     cout << "Hello, World!" << endl;
     cout << "I'm a c++ program." << endl;
@@ -272,6 +289,29 @@ int main() {
     whatAmI(1.0f);
     whatAmI("huh");
 
+    // TEMPLATE FUNCTION
+    cout << "Template of sum:" << "\n";
+    cout << sum<int>(10, 30) << "\n";
+    cout << sum<double>(10.0, 30.5) << "\n";
+    cout << sum<float>(5.43f, 123.32f) << "\n";
+    double aa = 2.54, bb = 123.42;
+    int cc = 1, dd = 2;
+    // The previous declaration implies the type.
+    cout << sum(aa, bb) << "\n";
+    cout << sum(cc, dd) << "\n";
+    if(areEqual(10, 10.0)) {
+        cout << "x and y are equal\n";
+    } else {
+        cout << "x and y are not equal\n";
+    }
+    if(areEqual<float, double>(15.0f, 10.0)) {
+        cout << "x and y are equal\n";
+    } else {
+        cout << "x and y are not equal\n";
+    }
+    // Fixed types
+    cout << fixedMultiply<int, 2>(10) << "\n"; // Instantiates a new method that only multiplies by two.
+
     return 0;
 }
 
@@ -283,4 +323,4 @@ string mySecondProtoFunciton(int a, int b) {
 }
 
 
-// CONTINUE READING on Overload and Templates: Function templates
+// CONTINUE READING on Name visibility:
