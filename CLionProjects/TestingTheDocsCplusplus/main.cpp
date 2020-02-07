@@ -312,6 +312,25 @@ int main() {
     // Fixed types
     cout << fixedMultiply<int, 2>(10) << "\n"; // Instantiates a new method that only multiplies by two.
 
+    // POINTERS
+    void* voidPtr = nullptr; // A completely empty pointer. Points to nothing (null)
+    int* nullIntPointer = nullptr; // A pointer pointing to an invalid memory address of the type int.
+    void* aVoidPointer = &a; // A pointer with no type that points to the memory address of the variable a. Can't be used to read or write.
+    int* aPointer = &a; // A pointer of type int that points to the memory address of the variable a. Can be used to read and write the information of the address as an integer.
+    a = 1;
+    cout << "Pointers: \n";
+    cout << aPointer << "\n"; // Will print out the memory address.
+    cout << (int) *aPointer << "\n"; // Will print out the value that is stored inside the memory address.
+    cout << &a << "\n"; // & Gets the memory address of a variable. In this case the memory address of a.
+    //*aPointer = 15; a = 15; // These two are equivalent.
+    *aPointer = 15; // This will overrite the value in the memory address of a.
+    cout << a << "\n"; // #=> 15
+    int** doublePointer = &aPointer; // This is a double pointer. (A pointer to a pointer)
+
+
+
+
+
     return 0;
 }
 
