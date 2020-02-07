@@ -99,6 +99,11 @@ T fixedMultiply(T val) {
     return val * N;
 }
 
+// REFERENCES
+void ReplacePhrase(string& stringToBeReplaced) {
+    stringToBeReplaced = "Goodbye!";
+}
+
 int main() {
     cout << "Hello, World!" << endl;
     cout << "I'm a c++ program." << endl;
@@ -327,6 +332,14 @@ int main() {
     cout << a << "\n"; // #=> 15
     int** doublePointer = &aPointer; // This is a double pointer. (A pointer to a pointer)
 
+    // REFERENCES
+    int& aRef = a; // Creates a reference to a. Basically aRef is a synonym for a. This is an integer reference, not an integer.
+    cout << (aRef == a) << "\n"; // #=> 1 // which is true.
+    // Using references in functions we can directly manipulate the argument passed into the function.
+    string aString = "Hello everyone";
+    cout << aString << "\n";
+    ReplacePhrase(aString); // Since the argument is passed by reference the function can directly manipulate aString;
+    cout << aString << "\n";
 
 
 
