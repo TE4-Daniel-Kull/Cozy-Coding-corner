@@ -48,17 +48,39 @@
    4. Du kan lämna alla inställningar som default. (Men ett tips är att dubbelkolla vilken betalnings plan du vill använda. Det går att skrolla till vänster för billigare alternativ såsom 5$).
    5. Tryck "Create droplet".
    6. Vänta på att dropletten skapas.
-8. Starta din container inuti din droplet.
+8. Starta din container inuti din droplet. (UTAN SSL)
    1. Gå till Droplets och kopiera ip adressen för din droplet.
-   2. Ta upp terminalen och ssh:a in till adressen med användaren "root". (Beroende på vilken metod du valde tidigare så får du antingen använda din ssh nyckel eller lösenordet från din epost för att logga in).
-   Exempel kommando `ssh -i <filvägen-till-din-ssh-nyckel> root@12.345.678.90`.
-   1. När du är inne i din droplet. Kör `docker login` för att logga in på ditt docker hub konto. I lösenords fältet skriver du in din Access Token som du skapade i tidigare steg.
-   2. Kör `docker pull <namnet-på-ditt-repository>` för att ladda ned din image från docker hub.
-   3. Till sist kör `docker run --detach --publish 80:80 --name <valfritt-namn-på-containern> <namnet-på-din-image>`. Exempel `docker run --detach --publish 80:80 --name api marca/localix-api`.
+   2. Ta upp terminalen och ssh:a in till adressen med användaren "root". (Beroende på vilken metod du valde tidigare så får du antingen använda din ssh nyckel eller lösenordet från din epost för att logga in). Exempel kommando `ssh -i <filvägen-till-din-ssh-nyckel> root@12.345.678.90`.
+   3. När du är inne i din droplet. Kör `docker login` för att logga in på ditt docker hub konto. I lösenords fältet skriver du in din Access Token som du skapade i tidigare steg.
+   4. Kör `docker pull <namnet-på-ditt-repository>` för att ladda ned din image från docker hub.
+   5. Till sist kör `docker run --detach --publish 80:80 --name <valfritt-namn-på-containern> <namnet-på-din-image>`. Exempel `docker run --detach --publish 80:80 --name api marca/localix-api`.
       1. `--detach`, står för att processen ska köras i bakgrunden. (Kör kommandot `docker ps`för att se vilka containrar är igång).
       2. `--publish`, den första 80 specifierar porten på ditt program. Den andra :80 specifierar porten på din container.
       3. `--name <custom-name>`, sätter namnet på containern till det namn du specifierar.
       4. `<namnet-på-din-image>`, specifierar vilken image du vill att din container ska starta ifrån.
-   4. För att dubbelkolla att containern körs så kan du skriva `docker ps` för att se alla containrar som körs. Nu borde du se att en container finns i listan med samma namn som du gav den i tidigare steg.
-   5. Om du nu surfar in på din droplets ip-adress i webbläsaren så bör du nu se din startsida.
-   6. Klart! (För att gå ut ur ssh i terminalen, skriv kommandot `exit`).
+   6. För att dubbelkolla att containern körs så kan du skriva `docker ps` för att se alla containrar som körs. Nu borde du se att en container finns i listan med samma namn som du gav den i tidigare steg.
+   7. Om du nu surfar in på din droplets ip-adress i webbläsaren så bör du nu se din startsida.
+   8. Klart! (För att gå ut ur ssh i terminalen, skriv kommandot `exit`).
+
+9. Starta din container inuti din droplet. (MED SSL) // TODO: Check if SSL IS WORKING!
+   1. Gå till Droplets och kopiera ip adressen för din droplet.
+   2. Ta upp terminalen och ssh:a in till adressen med användaren "root". (Beroende på vilken metod du valde tidigare så får du antingen använda din ssh nyckel eller lösenordet från din epost för att logga in). Exempel kommando `ssh -i <filvägen-till-din-ssh-nyckel> root@12.345.678.90`.
+   3. När du är inne i servern, kör `mkdir -p ~/.aspnet/https` för att skapa en map där vi kan förvara vårt aspnet certifikat.
+   4. Gå ut ur servern med hjälp av kommandot `exit`.
+   6.  Sätt upp ditt certifikat.
+       1.  Först dubbelkolla att du är tillbaka på din lokala dator så att du INTE sitter kvar på servern.
+       2.  Kör ```dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p <ditt-custom-certificat-lösenord>```.
+       3.  Sedan ```dotnet dev-certs https --trust```.
+   7.  Kopiera över ditt certifikat till servern.
+       1.  Kör kommandot `scp -i <filvägen-till-din-ssh-nyckel> <filvägen-till-ditt-certifikat> root@12.345.678.90:/root/.aspnet/https/` för att kopiera över certifikatet till servern. Exempel `scp -i ~/.ssh/id_rsa ~/.aspnet/https/aspnetapp.pfx root@12.345.678.90:/root/.aspnet/https/`.
+   8.  ssh:a in i servern igen. Exempel kommando `ssh -i <filvägen-till-din-ssh-nyckel> root@12.345.678.90`.
+   9.  När du är inne i din droplet. Kör `docker login` för att logga in på ditt docker hub konto. I lösenords fältet skriver du in din Access Token som du skapade i tidigare steg.
+   10. Kör `docker pull <namnet-på-ditt-repository>` för att ladda ned din image från docker hub.
+   11. Till sist kör `docker run -d -p 80:80 -p 443:443 -e ASPNETCORE_URLS="https://+;http://+" -e ASPNETCORE_HTTPS_PORT=443 -e ASPNETCORE_Kestrel__Certificates__Default__Password=<ditt-custom-certificat-lösenord-här> -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx -v ${HOME}/.aspnet/https:/https/ --name <valfritt-namn-på-containern> <namnet-på-din-image>`.
+       1.  `-d, --detach`, står för att processen ska köras i bakgrunden. (Kör kommandot `docker ps`för att se vilka containrar är igång).
+       2.  `-p, --publish`, den första 80 specifierar porten på ditt program. Den andra :80 specifierar porten på din container.
+       3.  `--name <custom-name>`, sätter namnet på containern till det namn du specifierar.
+       4.  `<namnet-på-din-image>`, specifierar vilken image du vill att din container ska starta ifrån.
+   12. För att dubbelkolla att containern körs så kan du skriva `docker ps` för att se alla containrar som körs. Nu borde du se att en container finns i listan med samma namn som du gav den i tidigare steg.
+   13. Om du nu surfar in på din droplets ip-adress i webbläsaren så bör du nu se din startsida.
+   14. Klart! (För att gå ut ur ssh i terminalen, skriv kommandot `exit`).
